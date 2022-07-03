@@ -13,6 +13,7 @@ setup(
     install_requires=[
         "openshift",
         "colorlog",
+        "pytest",
     ],
     python_requires=">=3.6",
 )

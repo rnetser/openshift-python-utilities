@@ -11,3 +11,10 @@ exclude =
 
 enable-extensions =
     FCFN,
+
+fcfn_exclude_functions =
+    LOGGER,
+    os,
+    fd,
+    logging,
+    subprocess,
