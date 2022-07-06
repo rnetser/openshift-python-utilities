@@ -1,4 +1,5 @@
 import logging
+import shutil
 from logging.handlers import RotatingFileHandler
 
 from colorlog import ColoredFormatter
@@ -23,6 +24,15 @@ class DuplicateFilter(logging.Filter):
         else:
             self.repeated_number = 1
         return False
+
+
+def separator(symbol_, val=None):
+    terminal_width = shutil.get_terminal_size(fallback=(120, 40))[0]
+    if not val:
+        return f"{symbol_ * terminal_width}"
+
+    sepa = int((terminal_width - len(val) - 2) // 2)
+    return f"{symbol_ * sepa} {val} {symbol_ * sepa}"
 
 
 def setup_logging(log_level, log_file="/tmp/pytest-tests.log"):
