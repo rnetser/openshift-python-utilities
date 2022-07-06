@@ -27,4 +27,4 @@ jobs:
         python -m pip install tox
     - name: Run tox
       run: |
-       tox -e code-check,unittests,validate-resources
+       tox -e code-check
