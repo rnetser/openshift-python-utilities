@@ -14,7 +14,7 @@ jobs:
           fetch-depth: 0
 
       - name: Run Action
-        uses: myakove/pr-workflows@upload-pypi-cleanup
+        uses: myakove/pr-workflows@master
         with:
           token: ${{secrets.BOT_TOKEN}}
           action: upload_to_pypi
