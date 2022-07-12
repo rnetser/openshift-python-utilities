@@ -9,7 +9,7 @@
     "commitMessage": "Release ${version}",
     "commitArgs": [],
     "tag": true,
-    "tagName": v${version},
+    "tagName": "v${version}",
     "tagMatch": null,
     "tagAnnotation": "Release ${version}",
     "tagArgs": [],
