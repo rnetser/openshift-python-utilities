@@ -5,24 +5,24 @@ import os
 LOGGER = logging.getLogger(__name__)
 
 
-def write_to_extras_file(extras_file_name, content, extra_dir_name="extras"):
+def write_to_file(file_name, content, dir_name="extras"):
     """
     This will write to a file that will be available after the test execution,
 
     Args:
-        extras_file_name (string): name of the file to write
+        file_name (string): name of the file to write
         content (string): the content of the file to write
-        extra_dir_name (string): (optional) the directory name to create inside the test collect dir
+        dir_name (string): (optional) the directory name to create inside the test collect dir
     """
     test_dir = collect_logs_prepare_test_dir()
     extras_dir = os.path.join(test_dir, extra_dir_name)
     os.makedirs(extras_dir, exist_ok=True)
-    extras_file_path = os.path.join(extras_dir, extras_file_name)
+    file_path = os.path.join(extras_dir, file_name)
     try:
-        with open(extras_file_path, "w") as fd:
+        with open(file_path, "w") as fd:
             fd.write(content)
     except Exception as exp:
-        LOGGER.error(f"Failed to write extras to file: {extras_file_path} {exp}")
+        LOGGER.error(f"Failed to write extras to file: {file_path} {exp}")
 
 
 def prepare_test_dir_log_utilities():
@@ -55,5 +55,7 @@ def collect_logs_prepare_test_dir():
     if not test_dir:
         # log collection was requested outside the scope of a test
         test_dir = prepare_test_dir_log_utilities()
-    os.makedirs(test_dir, exist_ok=True)
+        os.makedirs(test_dir, exist_ok=True)
+    else:    
+        os.makedirs(test_dir, exist_ok=True)
     return test_dir
