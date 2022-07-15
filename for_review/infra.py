@@ -10,7 +10,7 @@ from ocp_utilities.exceptions import ClusterSanityError
 LOGGER = logging.getLogger(__name__)
 
 
-def validate_nodes_ready(nodes):
+def assert_nodes_ready(nodes):
     """
     Validates all nodes are in ready
 
@@ -28,7 +28,7 @@ def validate_nodes_ready(nodes):
         )
 
 
-def validate_nodes_schedulable(nodes):
+def assert_nodes_schedulable(nodes):
     """
     Validates all nodes are in schedulable state
 
