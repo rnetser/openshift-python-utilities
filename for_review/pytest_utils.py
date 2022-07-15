@@ -1,6 +1,6 @@
 import pytest as pytest
 
-from ocp_utilities.file_utils import write_to_extras_file
+from ocp_utilities.file_utils import write_to_file
 
 
 def exit_pytest_execution(
@@ -21,7 +21,7 @@ def exit_pytest_execution(
         junitxml_property (pytest plugin): record_testsuite_property
     """
     if filename:
-        write_to_extras_file(
+        write_to_file(
             extras_file_name=filename,
             content=message,
             extra_dir_name="pytest_exit_errors",
