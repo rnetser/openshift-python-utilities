@@ -11,13 +11,13 @@ LOGGER = logging.getLogger(__name__)
 
 def create_must_gather_command(
     dest_dir,
-    image_url,
+    image_url=None,
     script_name=None,
     kubeconfig=None,
 ):
     base_command = (
-        f"oc adm must-gather {f'--kubeconfig {kubeconfig}' if kubeconfig else ''} --image={image_url}"
-        f" --dest-dir={dest_dir}"
+        f"oc adm must-gather {f'--kubeconfig {kubeconfig}' if kubeconfig else ''}"
+        f" {f'--image={image_url}' if image_url else ''} --dest-dir={dest_dir}"
     )
     return f"{base_command} -- {script_name}" if script_name else base_command
 
