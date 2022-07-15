@@ -56,6 +56,6 @@ def collect_logs_prepare_test_dir():
         # log collection was requested outside the scope of a test
         test_dir = prepare_test_dir_log_utilities()
         os.makedirs(test_dir, exist_ok=True)
-    else:    
+    else:
         os.makedirs(test_dir, exist_ok=True)
     return test_dir
