@@ -35,8 +35,8 @@ def separator(symbol_, val=None):
     return f"{symbol_ * sepa} {val} {symbol_ * sepa}"
 
 
-def setup_logging(log_level, log_file="/tmp/pytest-tests.log"):
-    logger_obj = logging.getLogger()
+def setup_logging(log_level="info", log_file_name=__name__):
+    logger_obj = logging.getLogger(log_file_name)
     basic_logger = logging.getLogger("basic")
 
     root_log_formatter = logging.Formatter(fmt="%(message)s")
@@ -55,11 +55,11 @@ def setup_logging(log_level, log_file="/tmp/pytest-tests.log"):
 
     console_handler = logging.StreamHandler()
     log_handler = RotatingFileHandler(
-        filename=log_file, maxBytes=100 * 1024 * 1024, backupCount=20
+        filename=log_file_name, maxBytes=100 * 1024 * 1024, backupCount=20
     )
     basic_console_handler = logging.StreamHandler()
     basic_log_handler = RotatingFileHandler(
-        filename=log_file, maxBytes=100 * 1024 * 1024, backupCount=20
+        filename=log_file_name, maxBytes=100 * 1024 * 1024, backupCount=20
     )
 
     basic_log_handler.setFormatter(fmt=root_log_formatter)
