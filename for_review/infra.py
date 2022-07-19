@@ -7,7 +7,7 @@ from kubernetes.dynamic import DynamicClient
 from ocp_utilities.exceptions import ClusterSanityError
 
 
-LOGGER = logging.getLogger(__name__)
+LOGGER = logging.setup_logging(name=__name__)
 
 
 def assert_nodes_ready(nodes):

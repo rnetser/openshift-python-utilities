@@ -35,7 +35,7 @@ def separator(symbol_, val=None):
     return f"{symbol_ * sepa} {val} {symbol_ * sepa}"
 
 
-def setup_logging(log_level="info", log_file_name=__name__):
+def setup_logging(name, log_level="info", log_file_name="/tmp/pytest-tests.log"):
     logger_obj = logging.getLogger(log_file_name)
     basic_logger = logging.getLogger("basic")
 

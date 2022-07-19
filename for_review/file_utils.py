@@ -2,7 +2,7 @@ import logging
 import os
 
 
-LOGGER = logging.getLogger(__name__)
+LOGGER = logging.setup_logging(name=__name__)
 
 
 def write_to_file(file_name, content, dir_name="extras"):
