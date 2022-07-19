@@ -36,7 +36,10 @@ def prepare_test_dir_log_utilities():
         os.environ.get("TEST_COLLECT_BASE_DIR"),
         "utilities",
     )
-    os.environ["TEST_DIR_LOG"] = test_dir_log
+    if os.environ.get("TEST_COLLECT_BASE_DIR") is not None:
+        os.environ["TEST_DIR_LOG"] = test_dir_log
+    else:
+        test_dir_log = "/tmp"
     os.makedirs(test_dir_log, exist_ok=True)
     return test_dir_log
 
