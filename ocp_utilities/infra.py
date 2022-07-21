@@ -4,7 +4,7 @@ import subprocess
 import kubernetes as kubernetes
 from kubernetes.dynamic import DynamicClient
 
-from ocp_utilities.exceptions import NodeNotReadyError, NodeUnschedulableError
+from ocp_utilities.exceptions import ClusterSanityError
 
 
 LOGGER = logging.getLogger(__name__)
@@ -23,7 +23,7 @@ def validate_nodes_ready(nodes):
     LOGGER.info("Verify all nodes are ready.")
     not_ready_nodes = [node.name for node in nodes if not node.kubelet_ready]
     if not_ready_nodes:
-        raise NodeNotReadyError(
+        raise ClusterSanityError(
             err_str=f"Following nodes are not in ready state: {not_ready_nodes}",
         )
 
@@ -43,7 +43,7 @@ def validate_nodes_schedulable(nodes):
         node.name for node in nodes if node.instance.spec.unschedulable
     ]
     if unschedulable_nodes:
-        raise NodeUnschedulableError(
+        raise ClusterSanityError(
             err_str=f"Following nodes are in unschedulable state: {unschedulable_nodes}",
         )
 
