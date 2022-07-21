@@ -26,7 +26,7 @@ class DuplicateFilter(logging.Filter):
         return False
 
 
-def separator(symbol_, val=None):
+def separator_for_logging(symbol_, val=None):
     terminal_width = shutil.get_terminal_size(fallback=(120, 40))[0]
     if not val:
         return f"{symbol_ * terminal_width}"

@@ -14,8 +14,8 @@ def write_to_file(file_name, content, dir_name="extras"):
         content (string): the content of the file to write
         dir_name (string): (optional) the directory name to create inside the test collect dir
     """
-    test_dir = collect_logs_prepare_test_dir()
-    extras_dir = os.path.join(test_dir, dir_name)
+    base_dir = collect_logs_prepare_base_dir()
+    extras_dir = os.path.join(base_dir, dir_name)
     os.makedirs(extras_dir, exist_ok=True)
     file_path = os.path.join(extras_dir, file_name)
     try:
@@ -25,26 +25,26 @@ def write_to_file(file_name, content, dir_name="extras"):
         LOGGER.error(f"Failed to write extras to file: {file_path} {exp}")
 
 
-def prepare_test_dir_log_utilities():
+def prepare_base_dir_log_utilities():
     """
     Prepares a "utilities" directory under the base log collection directory
 
     Returns:
         str: TEST_DIR_LOG (the base directory for log collection)
     """
-    test_dir_log = os.path.join(
+    base_dir_log = os.path.join(
         os.environ.get("TEST_COLLECT_BASE_DIR"),
         "utilities",
     )
     if os.environ.get("TEST_COLLECT_BASE_DIR") is not None:
-        os.environ["TEST_DIR_LOG"] = test_dir_log
+        os.environ["TEST_DIR_LOG"] = base_dir_log
     else:
-        test_dir_log = "/tmp"
-    os.makedirs(test_dir_log, exist_ok=True)
-    return test_dir_log
+        base_dir_log = "/tmp"
+    os.makedirs(base_dir_log, exist_ok=True)
+    return base_dir_log
 
 
-def collect_logs_prepare_test_dir():
+def collect_logs_prepare_base_dir():
     """
     Provides and ensures the creation of a directory to collect logs
 
@@ -52,13 +52,13 @@ def collect_logs_prepare_test_dir():
     If this is run outside the scope of a test the directory path will be for utilities
 
     Returns:
-        str: test_dir (the directory prefixed for collecting logs)
+        str: base_dir (the directory prefixed for collecting logs)
     """
-    test_dir = os.environ.get("TEST_DIR_LOG")
-    if not test_dir:
+    base_dir = os.environ.get("TEST_DIR_LOG")
+    if not base_dir:
         # log collection was requested outside the scope of a test
-        test_dir = prepare_test_dir_log_utilities()
-        os.makedirs(test_dir, exist_ok=True)
+        base_dir = prepare_base_dir_log_utilities()
+        os.makedirs(base_dir, exist_ok=True)
     else:
-        os.makedirs(test_dir, exist_ok=True)
-    return test_dir
+        os.makedirs(base_dir, exist_ok=True)
+    return base_dir
