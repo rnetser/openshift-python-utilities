@@ -36,10 +36,7 @@ def prepare_base_dir_log_utilities():
         os.environ.get("TEST_COLLECT_BASE_DIR"),
         "utilities",
     )
-    if os.environ.get("TEST_COLLECT_BASE_DIR") is not None:
-        os.environ["TEST_DIR_LOG"] = base_dir_log
-    else:
-        base_dir_log = "/tmp"
+    base_dir_log = os.environ.get("TEST_COLLECT_BASE_DIR", "/tmp")
     os.makedirs(base_dir_log, exist_ok=True)
     return base_dir_log
 
@@ -54,11 +51,5 @@ def collect_logs_prepare_base_dir():
     Returns:
         str: base_dir (the directory prefixed for collecting logs)
     """
-    base_dir = os.environ.get("TEST_DIR_LOG")
-    if not base_dir:
-        # log collection was requested outside the scope of a test
-        base_dir = prepare_base_dir_log_utilities()
-        os.makedirs(base_dir, exist_ok=True)
-    else:
-        os.makedirs(base_dir, exist_ok=True)
+    base_dir = os.environ.get("TEST_DIR_LOG", prepare_base_dir_log_utilities())
     return base_dir
