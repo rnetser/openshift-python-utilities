@@ -16,8 +16,8 @@ def create_must_gather_command(
     kubeconfig=None,
 ):
     base_command = (
-        f"oc adm must-gather {f'--kubeconfig {kubeconfig}' if kubeconfig else ''}"
-        f" {f'--image={image_url}' if image_url else ''} --dest-dir={dest_dir}"
+        f"{f'--kubeconfig {kubeconfig}' if kubeconfig else ''} {f'--image={image_url}' if image_url else ''} "
+        f"--dest-dir={dest_dir}"
     )
     return f"{base_command} -- {script_name}" if script_name else base_command
 
