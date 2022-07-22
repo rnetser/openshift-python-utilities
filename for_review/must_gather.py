@@ -24,7 +24,7 @@ def create_must_gather_command(
     return f"{base_command} -- {script_name}" if script_name else base_command
 
 
-def run_cnv_must_gather(must_gather_cmd):
+def run_must_gather(must_gather_cmd):
     LOGGER.info(f"Running: {must_gather_cmd}")
     return run_command(command=shlex.split(must_gather_cmd))[1]
 
@@ -40,4 +40,4 @@ def save_must_gather_logs(target_base_dir, must_gather_image_url, kubeconfig=Non
         dest_dir=logs_path,
         kubeconfig=kubeconfig,
     )
-    return run_cnv_must_gather(must_gather_cmd=must_gather_command)
+    return run_must_gather(must_gather_cmd=must_gather_command)
