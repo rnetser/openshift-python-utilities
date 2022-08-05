@@ -7,7 +7,7 @@ from kubernetes.dynamic import DynamicClient
 from ocp_utilities.exceptions import NodeNotReadyError, NodeUnschedulableError
 
 
-LOGGER = logging.setup_logging(name=__name__)
+LOGGER = logging.LOGGER = logging.getLogger(name=__name__)
 
 
 def assert_nodes_ready(nodes):
