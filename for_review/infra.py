@@ -1,16 +1,17 @@
-import logging
 import subprocess
 
 import kubernetes as kubernetes
 from kubernetes.dynamic import DynamicClient
 
-from ocp_utilities.exceptions import NodeNotReadyError, NodeUnschedulableError
+# TODO: once approved and copied to main dir, update import
+from for_review.exceptions import NodeNotReadyError, NodeUnschedulableError
+from for_review.logger import get_logger
 
 
-LOGGER = logging.LOGGER = logging.getLogger(name=__name__)
+LOGGER = get_logger(name=__name__)
 
 
-def assert_nodes_ready(nodes):
+def validate_nodes_ready(nodes):
     """
     Validates all nodes are in ready
 
@@ -18,17 +19,17 @@ def assert_nodes_ready(nodes):
          nodes(list): List of Node objects
 
     Raises:
-        AssertionError: Assert on node(s) in not ready state
+        NodeNotReadyError: Assert on node(s) in not ready state
     """
     LOGGER.info("Verify all nodes are ready.")
     not_ready_nodes = [node.name for node in nodes if not node.kubelet_ready]
     if not_ready_nodes:
         raise NodeNotReadyError(
-            err_str=f"Following nodes are not in ready state: {not_ready_nodes}",
+            f"Following nodes are not in ready state: {not_ready_nodes}"
         )
 
 
-def assert_nodes_schedulable(nodes):
+def validate_nodes_schedulable(nodes):
     """
     Validates all nodes are in schedulable state
 
@@ -36,7 +37,7 @@ def assert_nodes_schedulable(nodes):
          nodes(list): List of Node objects
 
     Raises:
-        AssertionError: Asserts on node(s) not schedulable
+        NodeUnschedulableError: Asserts on node(s) not schedulable
     """
     LOGGER.info("Verify all nodes are schedulable.")
     unschedulable_nodes = [
@@ -44,7 +45,7 @@ def assert_nodes_schedulable(nodes):
     ]
     if unschedulable_nodes:
         raise NodeUnschedulableError(
-            err_str=f"Following nodes are in unschedulable state: {unschedulable_nodes}",
+            f"Following nodes are in unscheduled state: {unschedulable_nodes}"
         )
 
 
@@ -64,6 +65,7 @@ def run_command(command, verify_stderr=True, shell=False):
     Returns:
         tuple: True, out if command succeeded, False, err otherwise.
     """
+    LOGGER.info(f"Running {command} command")
     sub_process = subprocess.Popen(
         command,
         stdout=subprocess.PIPE,
