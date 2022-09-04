@@ -41,5 +41,4 @@ def run_must_gather(
     if script_name:
         base_command += f" -- {script_name}"
 
-    LOGGER.info(f"must-gather command: {base_command}")
     return run_command(command=shlex.split(base_command))[1]
