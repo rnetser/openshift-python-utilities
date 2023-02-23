@@ -34,7 +34,7 @@ def get_client(config_file=None, config_dict=None, context=None, **kwargs):
     Returns:
         DynamicClient: a kubernetes client.
     """
-    # Ref: https://github.com/kubernetes-client/python/blob/master/kubernetes/base/config/kube_config.py
+    # Ref: https://github.com/kubernetes-client/python/blob/v26.1.0/kubernetes/base/config/kube_config.py
     if config_dict:
         return kubernetes.dynamic.DynamicClient(
             client=kubernetes.config.new_client_from_config_dict(
@@ -42,7 +42,7 @@ def get_client(config_file=None, config_dict=None, context=None, **kwargs):
             )
         )
     try:
-        # Ref: https://github.com/kubernetes-client/python/blob/master/kubernetes/base/config/__init__.py
+        # Ref: https://github.com/kubernetes-client/python/blob/v26.1.0/kubernetes/base/config/__init__.py
         LOGGER.info("Trying to get client via new_client_from_config")
         return kubernetes.dynamic.DynamicClient(
             client=kubernetes.config.new_client_from_config(
@@ -50,7 +50,7 @@ def get_client(config_file=None, config_dict=None, context=None, **kwargs):
             )
         )
     except MaxRetryError:
-        # Ref: https://github.com/kubernetes-client/python/blob/master/kubernetes/config/incluster_config_.py
+        # Ref: https://github.com/kubernetes-client/python/blob/v26.1.0/kubernetes/base/config/incluster_config.py
         LOGGER.info("Trying to get client via incluster_config")
         return kubernetes.dynamic.DynamicClient(
             client=kubernetes.config.incluster_config.load_incluster_config(
