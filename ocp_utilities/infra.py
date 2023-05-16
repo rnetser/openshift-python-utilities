@@ -1,3 +1,4 @@
+import base64
 import importlib
 import json
 import os
@@ -6,6 +7,8 @@ import shlex
 import kubernetes
 from ocp_resources.image_content_source_policy import ImageContentSourcePolicy
 from ocp_resources.node import Node
+from ocp_resources.resource import ResourceEditor
+from ocp_resources.secret import Secret
 from ocp_wrapper_data_collector.data_collector import (
     get_data_collector_base_dir,
     get_data_collector_dict,
@@ -354,3 +357,62 @@ def create_icsp(icsp_name, repository_digest_mirrors):
     )
     icsp.deploy()
     return icsp
+
+
+def dict_base64_encode(_dict):
+    """
+    Encoding dict in base64
+
+    Args:
+        _dict (dict): data dict to be encoded
+
+    Returns:
+        str: given _dict encoded in base64
+    """
+    return base64.b64encode(json.dumps(_dict).encode("ascii")).decode("utf-8")
+
+
+def create_update_secret(secret_data_dict, name, namespace):
+    """
+    Update existing secret or create a new secret; secret type - dockerconfigjson
+
+    Args:
+        secret_data_dict (dict): Secret data to be added/created,
+            example: {"auths":{
+                    <registry_name>:
+                        {"auth": <auth_token>,
+                        "email": <auth_email>},
+                    ...,
+                    <registry_name>:
+                        {"auth": <auth_token>,
+                        "email": <auth_email>}
+                    }
+                }
+        name (str): Secret name
+        namespace (str): Secret namespace
+
+    Returns:
+        Secret: secret object with secret_data_dict content included
+    """
+    secret = Secret(name=name, namespace=namespace)
+    secret_key = ".dockerconfigjson"
+    auths_key = "auths"
+
+    if secret.exists:
+        old_secret_data_dict = json.loads(
+            base64.b64decode(secret.instance.data[secret_key])
+        )[auths_key]
+        old_secret_data_dict.update(secret_data_dict[auths_key])
+        secret_data_encoded = dict_base64_encode(
+            _dict={auths_key: old_secret_data_dict}
+        )
+
+        ResourceEditor(
+            patches={secret: {"data": {secret_key: secret_data_encoded}}}
+        ).update()
+
+        return secret
+
+    secret.data_dict = {secret_key: dict_base64_encode(_dict=secret_data_dict)}
+
+    return secret.deploy()
