@@ -6,6 +6,7 @@ import shlex
 
 import kubernetes
 import urllib3
+import yaml
 from ocp_resources.image_content_source_policy import ImageContentSourcePolicy
 from ocp_resources.node import Node
 from ocp_resources.resource import ResourceEditor
@@ -424,3 +425,15 @@ def create_update_secret(secret_data_dict, name, namespace):
     secret.data_dict = {secret_key: dict_base64_encode(_dict=secret_data_dict)}
 
     return secret.deploy()
+
+
+def get_cluster_name_from_kubeconfig(kubeconfig):
+    LOGGER.info("Get cluster name from kubeconfig.")
+    with open(kubeconfig) as fd:
+        kubeconfig = yaml.safe_load(fd)
+
+    kubeconfig_clusters = kubeconfig["clusters"]
+    if len(kubeconfig_clusters) > 1:
+        raise ValueError("kubeconfig file contains more than one cluster.")
+
+    return kubeconfig_clusters[0]["name"]
