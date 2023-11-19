@@ -345,7 +345,7 @@ def dict_base64_encode(_dict):
     return base64.b64encode(json.dumps(_dict).encode("ascii")).decode("utf-8")
 
 
-def create_update_secret(secret_data_dict, name, namespace):
+def create_update_secret(secret_data_dict, name, namespace, admin_client):
     """
     Update existing secret or create a new secret; secret type - dockerconfigjson
 
@@ -363,11 +363,12 @@ def create_update_secret(secret_data_dict, name, namespace):
                 }
         name (str): Secret name
         namespace (str): Secret namespace
+        admin_client (DynamicClient): Cluster client.
 
     Returns:
         Secret: secret object with secret_data_dict content included
     """
-    secret = Secret(name=name, namespace=namespace)
+    secret = Secret(client=admin_client, name=name, namespace=namespace)
     secret_key = ".dockerconfigjson"
     auths_key = "auths"
 

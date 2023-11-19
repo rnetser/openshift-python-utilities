@@ -165,6 +165,7 @@ def install_operator(
             iib_index_image=iib_index_image,
             brew_token=brew_token,
             operator_market_namespace=operator_market_namespace,
+            admin_client=admin_client,
         )
     else:
         if not source:
@@ -259,7 +260,7 @@ def uninstall_operator(
         csv.wait_deleted(timeout=timeout)
 
 
-def create_catalog_source_for_iib_install(name, iib_index_image, brew_token, operator_market_namespace):
+def create_catalog_source_for_iib_install(name, iib_index_image, brew_token, operator_market_namespace, admin_client):
     """
     Create ICSP and catalog source for given iib index image
 
@@ -268,6 +269,7 @@ def create_catalog_source_for_iib_install(name, iib_index_image, brew_token, ope
         iib_index_image (str): iib index image url.
         brew_token (str): Token to access iib index image registry.
         operator_market_namespace (str): Namespace of the marketplace.
+        admin_client (DynamicClient): Cluster client.
 
     Returns:
         CatalogSource: catalog source object.
@@ -332,6 +334,7 @@ def create_catalog_source_for_iib_install(name, iib_index_image, brew_token, ope
         secret_data_dict=secret_data_dict,
         name="pull-secret",  # pragma: allowlist secret
         namespace="openshift-config",
+        admin_client=admin_client,
     )
 
     catalog_source = CatalogSource(
