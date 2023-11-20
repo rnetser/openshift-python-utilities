@@ -260,7 +260,9 @@ def uninstall_operator(
         csv.wait_deleted(timeout=timeout)
 
 
-def create_catalog_source_for_iib_install(name, iib_index_image, brew_token, operator_market_namespace, admin_client):
+def create_catalog_source_for_iib_install(
+    name, iib_index_image, brew_token, operator_market_namespace, admin_client=None
+):
     """
     Create ICSP and catalog source for given iib index image
 

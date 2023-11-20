@@ -345,7 +345,7 @@ def dict_base64_encode(_dict):
     return base64.b64encode(json.dumps(_dict).encode("ascii")).decode("utf-8")
 
 
-def create_update_secret(secret_data_dict, name, namespace, admin_client):
+def create_update_secret(secret_data_dict, name, namespace, admin_client=None):
     """
     Update existing secret or create a new secret; secret type - dockerconfigjson
 
