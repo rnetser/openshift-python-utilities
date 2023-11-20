@@ -135,6 +135,7 @@ def install_operator(
     target_namespaces=None,
     timeout=TIMEOUT_30MIN,
     operator_namespace=None,
+    source_image=None,
     iib_index_image=None,
     brew_token=None,
 ):
@@ -145,13 +146,17 @@ def install_operator(
         admin_client (DynamicClient): Cluster client.
         name (str): Name of the operator to install.
         channel (str): Channel to install operator from.
-        source (str, optional): CatalogSource name.
+        source (str, optional): CatalogSource name. Source must be provided if iib_index_image or source_image not provided.
         target_namespaces (list, optional): Target namespaces for the operator install process.
             If not provided, a namespace with te operator name will be created and used.
         timeout (int): Timeout in seconds to wait for operator to be ready.
         operator_namespace (str, optional): Operator namespace, if not provided, operator name will be used.
+        source_image (str, optional): Source image url, If provided install operator from this CatalogSource Image.
         iib_index_image (str, optional): iib index image url, If provided install operator from iib index image.
         brew_token (str, optional): Token to access iib index image registry.
+
+    Raises:
+        ValueError: When either one of them not provided (source, source_image, iib_index_image)
     """
     catalog_source = None
     operator_market_namespace = "openshift-marketplace"
@@ -167,9 +172,17 @@ def install_operator(
             operator_market_namespace=operator_market_namespace,
             admin_client=admin_client,
         )
+    elif source_image:
+        source_name = f"catalog-{name}"
+        catalog_source = create_catalog_source_from_image(
+            admin_client=admin_client,
+            name=source_name,
+            namespace=operator_market_namespace,
+            image=source_image,
+        )
     else:
         if not source:
-            raise ValueError("source must be provided if not using iib_index_image")
+            raise ValueError("source must be provided if not using iib_index_image or source_image")
 
     operator_namespace = operator_namespace or name
     if target_namespaces:
@@ -339,14 +352,42 @@ def create_catalog_source_for_iib_install(
         admin_client=admin_client,
     )
 
-    catalog_source = CatalogSource(
+    iib_catalog_source = create_catalog_source_from_image(
+        admin_client=admin_client,
         name=name,
         namespace=operator_market_namespace,
-        display_name=name,
         image=_iib_index_image,
+    )
+    return iib_catalog_source
+
+
+def create_catalog_source_from_image(
+    name, namespace, image, source_type=None, update_strategy_registry_poll_interval=None, admin_client=None
+):
+    """
+    Create CatalogSource for given image
+
+    Args:
+        admin_client (DynamicClient): Cluster client.
+        name (str): Name for the catalog source (used in 'name, display_name and publisher').
+        image (str): Image index for the catalog.
+        namespace (str): Namespace where CatalogSource will be created.
+        source_type (str, optional): Name of the source type.
+        update_strategy_registry_poll_interval (str, optional): Time interval between checks of the latest
+                catalog_source version.
+
+    Returns:
+        CatalogSource: catalog source object.
+    """
+    catalog_source = CatalogSource(
+        client=admin_client,
+        name=name,
+        namespace=namespace,
+        display_name=name,
+        image=image,
         publisher=name,
-        source_type="grpc",
-        update_strategy_registry_poll_interval="30m",
+        source_type=source_type or "grpc",
+        update_strategy_registry_poll_interval=update_strategy_registry_poll_interval or "30m",
     )
     catalog_source.deploy(wait=True)
     return catalog_source
