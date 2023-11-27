@@ -54,7 +54,7 @@ def run_command(
     err_decoded = sub_process.stderr
 
     error_msg = (
-        f"Failed to run {command_for_log}. rc: {sub_process.returncode}, out:" f" {out_decoded}, error: {err_decoded}"
+        f"Failed to run {command_for_log}. rc: {sub_process.returncode}, out: {out_decoded}, error: {err_decoded}"
     )
 
     if sub_process.returncode != 0:

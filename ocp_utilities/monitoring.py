@@ -37,12 +37,22 @@ class Prometheus(object):
         resource_name="prometheus-k8s",
         client=None,
         verify_ssl=True,
+        bearer_token=None,
     ):
+        """
+        Args:
+            namespace (str): Prometheus API resource namespace
+            resource_name (str): Prometheus API resource name
+            client (DynamicClient): Admin client resource
+            verify_ssl (bool): Perform SSL verification on query
+            bearer_token (str): Used for query OAuth with API endpoint
+        """
         self.namespace = namespace
         self.resource_name = resource_name
         self.client = client or get_client()
         self.api_v1 = "/api/v1"
         self.verify_ssl = verify_ssl
+        self.bearer_token = bearer_token
         self.api_url = self._get_route()
         self.headers = self._get_headers()
         self.scrape_interval = self.get_scrape_interval()
@@ -55,15 +65,14 @@ class Prometheus(object):
         return f"https://{route}"
 
     def _get_headers(self):
-        """Uses the Prometheus serviceaccount to get an access token for OAuth"""
-
+        """Uses the Prometheus serviceaccount to get an access token for OAuth if not given"""
         LOGGER.info("Setting Prometheus headers and Obtaining OAuth token")
 
-        secret = self._get_resource_secret()
+        if not self.bearer_token:
+            secret = self._get_resource_secret()
+            self.bearer_token = secret.instance.metadata.annotations["openshift.io/token-secret.value"]
 
-        token = secret.instance.metadata.annotations["openshift.io/token-secret.value"]
-
-        return {"Authorization": f"Bearer {token}"}
+        return {"Authorization": f"Bearer {self.bearer_token}"}
 
     def _get_service_account(self):
         """get service account  for the given namespace and resource"""
@@ -153,7 +162,7 @@ class Prometheus(object):
              int: scrape time interval or default 30 if not found
         """
         response = self._get_response(query=f"{self.api_v1}/targets")
-        result = response["data"]["activeTargets"]
+        result = response.get("data", {}).get("activeTargets", [])
         for item in result:
             if item and item["labels"]["job"] == "prometheus-k8s":
                 scrape_interval = item["scrapeInterval"]
@@ -186,7 +195,7 @@ class Prometheus(object):
                 if sample["status"] == "success":
                     return sample.get("data", {}).get("result")
         except TimeoutExpiredError:
-            LOGGER.error(f"Failed to get successful status after executing query '{query}'." f" Query result: {sample}")
+            LOGGER.error(f"Failed to get successful status after executing query '{query}'. Query result: {sample}")
             raise
 
     def alerts(self):

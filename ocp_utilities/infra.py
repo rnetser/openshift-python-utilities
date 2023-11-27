@@ -119,14 +119,12 @@ def assert_pods_failed_or_pending(pods):
         if pod.exists:
             pod_status = pod.instance.status.phase
             if pod_status in [pod.Status.PENDING, pod.Status.FAILED]:
-                failed_or_pending_pods.append(
-                    f"name: {pod.name}, namespace: {pod.namespace}, status:" f" {pod_status}\n"
-                )
+                failed_or_pending_pods.append(f"name: {pod.name}, namespace: {pod.namespace}, status: {pod_status}\n")
 
     if failed_or_pending_pods:
         failed_or_pending_pods_str = "\t".join(map(str, failed_or_pending_pods))
         raise PodsFailedOrPendingError(
-            "The following pods are failed or" f" pending:\n\t{failed_or_pending_pods_str}",
+            f"The following pods are failed or pending:\n\t{failed_or_pending_pods_str}",
         )
 
 
@@ -187,7 +185,7 @@ def assert_nodes_in_healthy_condition(
             indent=3,
         )
         raise NodesNotHealthyConditionError(
-            "Following are nodes with unhealthy" f" condition/s:\n{nodes_unhealthy_condition_error_str}"
+            f"Following are nodes with unhealthy condition/s:\n{nodes_unhealthy_condition_error_str}"
         )
 
 
@@ -228,7 +226,7 @@ class DynamicClassCreator:
                         module_name, function_name = collect_data_function.rsplit(".", 1)
                         import_module = importlib.import_module(name=module_name)
                         collect_data_function = getattr(import_module, function_name)
-                        LOGGER.info("[Data collector] Collecting data for" f" {self.kind} {self.name}")
+                        LOGGER.info(f"[Data collector] Collecting data for {self.kind} {self.name}")
                         collect_data_function(
                             directory=data_collector_directory,
                             resource_object=self,
@@ -294,7 +292,7 @@ def create_icsp_command(image, source_url, folder_name, pull_secret=None, filter
         str: base command to create icsp in the cluster.
     """
     base_command = (
-        f"oc adm catalog mirror {image} {source_url} --manifests-only " f"--to-manifests {folder_name} {filter_options}"
+        f"oc adm catalog mirror {image} {source_url} --manifests-only --to-manifests {folder_name} {filter_options}"
     )
     if pull_secret:
         base_command = f"{base_command} --registry-config={pull_secret}"

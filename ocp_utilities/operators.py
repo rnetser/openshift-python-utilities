@@ -56,7 +56,7 @@ def wait_for_install_plan_from_subscription(admin_client, subscription, timeout=
                 )
     except TimeoutExpiredError:
         LOGGER.error(
-            f"Subscription: {subscription.name}, did not get updated with install plan:" f" {pformat(subscription)}"
+            f"Subscription: {subscription.name}, did not get updated with install plan: {pformat(subscription)}"
         )
         raise
 
