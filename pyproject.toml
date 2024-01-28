@@ -45,6 +45,8 @@ timeout-sampler = "^0.0.1"
 [tool.poetry.group.dev.dependencies]
 ipdb = "^0.13.13"
 ipython = "*"
+
+[tool.poetry.group.tests.dependencies]
 pytest = "^8.0.0"
 pytest-testconfig = "^0.2.0"
 
