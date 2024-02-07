@@ -42,14 +42,11 @@ openshift-python-wrapper-data-collector = ">=1.0.4"
 python-simple-logger = ">=1.0.5"
 timeout-sampler = ">=0.0.1"
 openshift-python-wrapper = ">=10.0.4"
+pytest = "^8.0.0"
 
 [tool.poetry.group.dev.dependencies]
 ipdb = "^0.13.13"
 ipython = "*"
-
-[tool.poetry.group.tests.dependencies]
-pytest = "^8.0.0"
-pytest-testconfig = "^0.2.0"
 
 [tool.poetry-dynamic-versioning]
 enable = true
