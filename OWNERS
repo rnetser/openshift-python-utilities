@@ -1,8 +1,11 @@
 approvers:
-  - myakove
   - rnetser
-reviewers:
   - myakove
+reviewers:
   - rnetser
   - omrirh
-  - oharan2
+  - ILpinto
+  - myakove
+  - chetna14manku
+  - rujutashinde
+  - dbasunag
