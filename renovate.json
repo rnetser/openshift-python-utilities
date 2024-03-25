@@ -1,6 +1,1 @@
-{
-  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "baseBranches": [
-    "main"
-  ]
-}
+{"$schema": "https://docs.renovatebot.com/renovate-schema.json", "packageRules": [{"matchPackagePatterns": ["colorlog", "pyyaml", "openshift-python-wrapper-data-collector", "python-simple-logger", "timeout-sampler", "openshift-python-wrapper", "pytest", "beautifulsoup4", "requests", "semver", "ipdb", "ipython"], "groupName": "poetry-deps"}]}
