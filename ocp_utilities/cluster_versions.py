@@ -59,4 +59,13 @@ def get_accepted_cluster_versions():
 
 
 def get_cluster_version(client):
+    """
+    Get cluster version
+
+    Args:
+        client (DynamicClient): Cluster client
+
+    Returns:
+        str: Cluster version
+    """
     return ClusterVersion(client=client, name="version").instance.status.history[0].version
