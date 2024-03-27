@@ -1,10 +1,13 @@
 import functools
+import re
 
 import requests
 from bs4 import BeautifulSoup
+from ocp_resources.cluster_version import ClusterVersion
 from simple_logger.logger import get_logger
 from semver import Version
 
+from ocp_utilities.exceptions import ClusterVersionNotFoundError
 
 LOGGER = get_logger(name="ocp-versions")
 
@@ -55,3 +58,29 @@ def get_accepted_cluster_versions():
                 _accepted_version_dict.setdefault("stable", {}).setdefault(base_version, []).append(version)
 
     return _accepted_version_dict
+
+
+def get_cluster_version(client=None):
+    """
+    Get cluster version
+
+    Args:
+        client (DynamicClient, optional): Cluster client
+
+    Returns:
+        Version: cluster version
+    """
+    cluster_version = ClusterVersion(client=client, name="version")
+    if cluster_version_message := cluster_version.get_condition_message(
+        condition_type=cluster_version.Condition.AVAILABLE,
+        condition_status=cluster_version.Condition.Status.TRUE,
+    ):
+        try:
+            ocp_version = re.search(r"([\d.]+)", cluster_version_message).group()
+            LOGGER.info(f"Cluster version: {ocp_version}")
+            return Version.parse(ocp_version)
+
+        except (AttributeError, IndexError) as ex:
+            raise ClusterVersionNotFoundError(f"Cluster version not found: {cluster_version_message}, exception: {ex}")
+
+    raise ClusterVersionNotFoundError("`ClusterVersion` message not found")

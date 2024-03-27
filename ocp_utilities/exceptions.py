@@ -21,3 +21,7 @@ class CommandExecFailed(Exception):
 
     def __str__(self):
         return f"Command: {self.name} - exec failed. {self.err}"
+
+
+class ClusterVersionNotFoundError(Exception):
+    pass
