@@ -68,4 +68,7 @@ def get_cluster_version(client):
     Returns:
         str: Cluster version
     """
-    return ClusterVersion(client=client, name="version").instance.status.history[0].version
+    cluster_version = ClusterVersion(client=client, name="version").instance.status.history[0].version
+    LOGGER.info(f"Cluster version: {cluster_version}")
+
+    return cluster_version
