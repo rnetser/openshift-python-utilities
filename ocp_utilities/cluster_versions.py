@@ -1,4 +1,5 @@
 import functools
+import re
 
 import requests
 from bs4 import BeautifulSoup
@@ -68,7 +69,16 @@ def get_cluster_version(client):
     Returns:
         str: Cluster version
     """
-    cluster_version = ClusterVersion(client=client, name="version").instance.status.history[0].version
-    LOGGER.info(f"Cluster version: {cluster_version}")
+    cluster_version = ClusterVersion(client=client, name="version")
+    cluster_version_message = cluster_version.get_condition_message(
+        condition_type=cluster_version.Condition.AVAILABLE,
+        condition_status=cluster_version.Condition.Status.TRUE,
+    )
+    try:
+        ocp_version = re.match(r"([\d.]+)", cluster_version_message).group()
+        LOGGER.info(f"Cluster version: {ocp_version}")
+        return ocp_version
 
-    return cluster_version
+    except (AttributeError, IndexError):
+        LOGGER.error(f"Cluster version not found: {cluster_version_message}")
+        raise
