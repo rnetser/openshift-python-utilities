@@ -2,6 +2,7 @@ import functools
 
 import requests
 from bs4 import BeautifulSoup
+from ocp_resources.cluster_version import ClusterVersion
 from simple_logger.logger import get_logger
 from semver import Version
 
@@ -55,3 +56,7 @@ def get_accepted_cluster_versions():
                 _accepted_version_dict.setdefault("stable", {}).setdefault(base_version, []).append(version)
 
     return _accepted_version_dict
+
+
+def get_cluster_version(client):
+    return ClusterVersion(client=client, name="version").instance.status.history[0].version
