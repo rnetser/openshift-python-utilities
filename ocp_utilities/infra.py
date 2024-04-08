@@ -49,6 +49,8 @@ def get_client(config_file=None, config_dict=None, context=None, **kwargs):
         DynamicClient: a kubernetes client.
     """
     # Ref: https://github.com/kubernetes-client/python/blob/v26.1.0/kubernetes/base/config/kube_config.py
+
+    print(os.getenv("KUBECONFIG"))
     if config_dict:
         return kubernetes.dynamic.DynamicClient(
             client=kubernetes.config.new_client_from_config_dict(config_dict=config_dict, context=context, **kwargs)
@@ -56,6 +58,11 @@ def get_client(config_file=None, config_dict=None, context=None, **kwargs):
     try:
         # Ref: https://github.com/kubernetes-client/python/blob/v26.1.0/kubernetes/base/config/__init__.py
         LOGGER.info("Trying to get client via new_client_from_config")
+
+        # kubernetes.config.kube_config.load_kube_config sets KUBE_CONFIG_DEFAULT_LOCATION during module import.
+        # If `KUBECONFIG` environment variable is set via code, the `KUBE_CONFIG_DEFAULT_LOCATION` will be None since
+        # is populated during import which comes before setting the variable in code.
+        config_file = config_file or os.environ.get("KUBECONFIG", "~/.kube/config")
         return kubernetes.dynamic.DynamicClient(
             client=kubernetes.config.new_client_from_config(config_file=config_file, context=context, **kwargs)
         )
