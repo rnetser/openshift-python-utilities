@@ -50,7 +50,6 @@ def get_client(config_file=None, config_dict=None, context=None, **kwargs):
     """
     # Ref: https://github.com/kubernetes-client/python/blob/v26.1.0/kubernetes/base/config/kube_config.py
 
-    print(os.getenv("KUBECONFIG"))
     if config_dict:
         return kubernetes.dynamic.DynamicClient(
             client=kubernetes.config.new_client_from_config_dict(config_dict=config_dict, context=context, **kwargs)
