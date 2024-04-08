@@ -49,7 +49,6 @@ def get_client(config_file=None, config_dict=None, context=None, **kwargs):
         DynamicClient: a kubernetes client.
     """
     # Ref: https://github.com/kubernetes-client/python/blob/v26.1.0/kubernetes/base/config/kube_config.py
-
     if config_dict:
         return kubernetes.dynamic.DynamicClient(
             client=kubernetes.config.new_client_from_config_dict(config_dict=config_dict, context=context, **kwargs)
